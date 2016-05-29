@@ -17,8 +17,7 @@
 //==============================================================================
 /**
 */
-class FftapeDelayAudioProcessor  : public AudioProcessor,
-                                   public AudioProcessorValueTreeState::Listener
+class FftapeDelayAudioProcessor  : public AudioProcessor
 {
 public:
     //==============================================================================
@@ -33,13 +32,11 @@ public:
 
     void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
 
-    void fillDelayBuffer (AudioSampleBuffer& buffer, const int channelIn, const int channelOut, const int64 writePos);
+    void fillDelayBuffer (AudioSampleBuffer& buffer, const int channelIn, const int channelOut, const int64 writePos, float startGain, float endGain);
 
     void fetchFromDelayBuffer (AudioSampleBuffer& buffer, const int channelIn, const int channelOut, const int64 readPos);
 
-    void feedbackDelayBuffer (AudioSampleBuffer& buffer, const int channelIn, const int channelOut, const int64 writePos);
-
-    void parameterChanged (const String &parameterID, float newValue) override;
+    void feedbackDelayBuffer (AudioSampleBuffer& buffer, const int channelIn, const int channelOut, const int64 writePos, float startGain, float endGain);
 
     //==============================================================================
     AudioProcessorEditor* createEditor() override;
@@ -78,10 +75,7 @@ private:
 
     AudioSampleBuffer                           mDelayBuffer;
 
-    float mInputGain;
     float mLastInputGain;
-    float mTime;
-    float mFeedbackGain;
     float mLastFeedbackGain;
 
     int64 mWritePos;
