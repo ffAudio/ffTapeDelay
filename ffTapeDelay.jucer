@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="huOgvr" name="FF-TapeDelay" projectType="audioplug" version="1.0.0"
+              bundleIdentifier="com.foleysfinest.FFTapeDelay" includeBinaryInAppConfig="1"
+              buildVST="1" buildVST3="1" buildAU="1" buildAUv3="0" buildRTAS="0"
+              buildAAX="1" pluginName="FF-TapeDelay" pluginDesc="FF-TapeDelay"
+              pluginManufacturer="Foleys-Finest" pluginManufacturerCode="FFAU"
+              pluginCode="Tpdl" pluginChannelConfigs="" pluginIsSynth="0" pluginWantsMidiIn="0"
+              pluginProducesMidiOut="0" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
+              pluginAUExportPrefix="FFTapeDelayAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.FFTapeDelay"
+              pluginAAXCategory="AAX_ePlugInCategory_Delay" jucerVersion="4.2.1"
+              companyWebsite="www.foleysfinest.com" companyEmail="developer@foleysfinest.com"
+              companyName="Foleys Finest" pluginVSTCategory="kPlugCategEffect">
+  <MAINGROUP id="F25xsz" name="FF-TapeDelay">
+    <GROUP id="{6B4C2B33-3E03-2019-826E-A12C653A4BA8}" name="Source">
+      <FILE id="yYqBh5" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="PCWJkH" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="fBeil6" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="dtxeJT" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX" vstFolder="" vst3Folder="" aaxFolder="">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="FF-TapeDelay"
+                       cppLanguageStandard="c++11" cppLibType="libc++" osxCompatibility="10.7 SDK"
+                       xcodeAaxBinaryLocation="/Applications/ProTools_3PDev/Plug-Ins/"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="FF-TapeDelay"
+                       osxCompatibility="10.7 SDK" cppLanguageStandard="c++11" cppLibType="libc++"
+                       xcodeAaxBinaryLocation="/Applications/ProTools_3PDev/Plug-Ins/"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../../juce/juceNew/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../juce/juceNew/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../juce/juceNew/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../juce/juceNew/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../juce/juceNew/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../juce/juceNew/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../juce/juceNew/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../juce/juceNew/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../juce/juceNew/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../juce/juceNew/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../juce/juceNew/JUCE/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
+</JUCERPROJECT>
