@@ -17,7 +17,8 @@
 //==============================================================================
 /**
 */
-class FftapeDelayAudioProcessor  : public AudioProcessor
+class FftapeDelayAudioProcessor  :  public AudioProcessor,
+                                    public AudioProcessorValueTreeState::Listener
 {
 public:
     //==============================================================================
@@ -27,6 +28,8 @@ public:
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
+
+    void parameterChanged (const String &parameterID, float newValue) override;
 
     bool isBusesLayoutSupported (const BusesLayout& layouts) const override;
 
@@ -74,6 +77,10 @@ private:
     ScopedPointer<UndoManager>                  mUndoManager;
 
     AudioSampleBuffer                           mDelayBuffer;
+
+    Atomic<float>   mGain;
+    Atomic<float>   mTime;
+    Atomic<float>   mFeedback;
 
     float mLastInputGain;
     float mLastFeedbackGain;

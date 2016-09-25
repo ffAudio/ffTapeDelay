@@ -19,6 +19,9 @@ String FftapeDelayAudioProcessor::paramFeedback ("feedback");
 
 //==============================================================================
 FftapeDelayAudioProcessor::FftapeDelayAudioProcessor() :
+    mGain (1.0),
+    mTime (200.0),
+    mFeedback (0.6),
     mLastInputGain (0.0),
     mLastFeedbackGain (0.0),
     mWritePos (0),
@@ -115,6 +118,19 @@ void FftapeDelayAudioProcessor::releaseResources()
     // spare memory, etc.
 }
 
+void FftapeDelayAudioProcessor::parameterChanged (const String &parameterID, float newValue)
+{
+    if (parameterID == paramGain) {
+        mGain = newValue;
+    }
+    else if (parameterID == paramTime) {
+        mTime = newValue;
+    }
+    else if (parameterID == paramFeedback) {
+        mFeedback = newValue;
+    }
+}
+
 bool FftapeDelayAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
     // we only support stereo and mono
@@ -133,14 +149,13 @@ bool FftapeDelayAudioProcessor::isBusesLayoutSupported (const BusesLayout& layou
 
 void FftapeDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
+    ScopedLock lock (getCallbackLock());
+    
     if (Bus* inputBus = getBus (true, 0))
     {
-        NormalisableRange<float> gainRange = mState->getParameterRange (paramGain);
-        const float gain = gainRange.convertFrom0to1 (mState->getParameter (paramGain)->getValue());
-        NormalisableRange<float> timeRange = mState->getParameterRange (paramTime);
-        const float time = timeRange.convertFrom0to1 (mState->getParameter (paramTime)->getValue());
-        NormalisableRange<float> feedbackRange = mState->getParameterRange (paramFeedback);
-        const float feedback = feedbackRange.convertFrom0to1 (mState->getParameter (paramFeedback)->getValue());
+        const float gain = mGain.get();
+        const float time = mTime.get();
+        const float feedback = mFeedback.get();
 
         for (int i=0; i < inputBus->getNumberOfChannels(); ++i) {
             const int inputChannelNum = inputBus->getChannelIndexInProcessBlockBuffer (i);
