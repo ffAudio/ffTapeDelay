@@ -28,7 +28,7 @@ public:
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
 
-    bool setPreferredBusArrangement (bool isInput, int bus, const AudioChannelSet& preferredSet) override;
+    bool isBusesLayoutSupported (const BusesLayout& layouts) const override;
 
     void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
 

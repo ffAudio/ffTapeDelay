@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="huOgvr" name="FF-TapeDelay" projectType="audioplug" version="1.0.0"
+<JUCERPROJECT id="huOgvr" name="FF-TapeDelay" projectType="audioplug" version="1.0.1"
               bundleIdentifier="com.foleysfinest.FFTapeDelay" includeBinaryInAppConfig="1"
               buildVST="1" buildVST3="1" buildAU="1" buildAUv3="0" buildRTAS="0"
               buildAAX="1" pluginName="FF-TapeDelay" pluginDesc="FF-TapeDelay"
@@ -8,7 +8,7 @@
               pluginCode="Tpdl" pluginChannelConfigs="" pluginIsSynth="0" pluginWantsMidiIn="0"
               pluginProducesMidiOut="0" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="FFTapeDelayAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.FFTapeDelay"
-              pluginAAXCategory="AAX_ePlugInCategory_Delay" jucerVersion="4.2.1"
+              pluginAAXCategory="AAX_ePlugInCategory_Delay" jucerVersion="4.2.4"
               companyWebsite="www.foleysfinest.com" companyEmail="developer@foleysfinest.com"
               companyName="Foleys Finest" pluginVSTCategory="kPlugCategEffect">
   <MAINGROUP id="F25xsz" name="FF-TapeDelay">
@@ -33,17 +33,17 @@
                        xcodeAaxBinaryLocation="/Applications/ProTools_3PDev/Plug-Ins/"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="../../juce/juceNew/JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="../../juce/juceNew/JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="../../juce/juceNew/JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../juce/juceNew/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../juce/juceNew/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../juce/juceNew/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../../juce/juceNew/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../juce/juceNew/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../juce/juceNew/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../juce/juceNew/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../../juce/juceNew/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../juce/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../juce/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../juce/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../juce/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../juce/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../juce/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../juce/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../juce/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../juce/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../juce/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../juce/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>

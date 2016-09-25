@@ -115,53 +115,59 @@ void FftapeDelayAudioProcessor::releaseResources()
     // spare memory, etc.
 }
 
-
-bool FftapeDelayAudioProcessor::setPreferredBusArrangement (bool isInput, int bus, const AudioChannelSet& preferredSet)
+bool FftapeDelayAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
-    // accept only one input and one output bus
-    if (bus > 0) {
+    // we only support stereo and mono
+    if (layouts.getMainInputChannels() == 0 || layouts.getMainInputChannels() > 2)
         return false;
-    }
 
-    // accept input bus == output bus
-    return AudioProcessor::setPreferredBusArrangement (isInput, bus, preferredSet);
+    if (layouts.getMainOutputChannels() == 0 || layouts.getMainOutputChannels() > 2)
+        return false;
+
+    // we don't allow the narrowing the number of channels
+    if (layouts.getMainInputChannels() > layouts.getMainOutputChannels())
+        return false;
+
+    return true;
 }
-
 
 void FftapeDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
-    AudioChannelSet inputBus = busArrangement.inputBuses.getUnchecked (0).channels;
+    if (Bus* inputBus = getBus (true, 0))
+    {
+        NormalisableRange<float> gainRange = mState->getParameterRange (paramGain);
+        const float gain = gainRange.convertFrom0to1 (mState->getParameter (paramGain)->getValue());
+        NormalisableRange<float> timeRange = mState->getParameterRange (paramTime);
+        const float time = timeRange.convertFrom0to1 (mState->getParameter (paramTime)->getValue());
+        NormalisableRange<float> feedbackRange = mState->getParameterRange (paramFeedback);
+        const float feedback = feedbackRange.convertFrom0to1 (mState->getParameter (paramFeedback)->getValue());
 
-    NormalisableRange<float> gainRange = mState->getParameterRange (paramGain);
-    const float gain = gainRange.convertFrom0to1 (mState->getParameter (paramGain)->getValue());
-    NormalisableRange<float> timeRange = mState->getParameterRange (paramTime);
-    const float time = timeRange.convertFrom0to1 (mState->getParameter (paramTime)->getValue());
-    NormalisableRange<float> feedbackRange = mState->getParameterRange (paramFeedback);
-    const float feedback = feedbackRange.convertFrom0to1 (mState->getParameter (paramFeedback)->getValue());
+        for (int i=0; i < inputBus->getNumberOfChannels(); ++i) {
+            const int inputChannelNum = inputBus->getChannelIndexInProcessBlockBuffer (i);
+            fillDelayBuffer (buffer, inputChannelNum, i, mWritePos, mLastInputGain, gain);
+        }
+        mLastInputGain = gain;
 
-    for (int i=0; i<inputBus.size(); ++i) {
-        const int inputChannelNum = busArrangement.getChannelIndexInProcessBlockBuffer (true, 0, i);
-        fillDelayBuffer (buffer, inputChannelNum, i, mWritePos, mLastInputGain, gain);
+        const int64 readPos = static_cast<int64>((mDelayBuffer.getNumSamples() + mWritePos - (mSampleRate * time / 1000.0))) % mDelayBuffer.getNumSamples();
+
+        if (Bus* outputBus = getBus (false, 0)) {
+            for (int i=0; i<outputBus->getNumberOfChannels(); ++i) {
+                const int outputChannelNum = outputBus->getChannelIndexInProcessBlockBuffer (i);
+
+                fetchFromDelayBuffer (buffer, i % mDelayBuffer.getNumChannels(), outputChannelNum, readPos);
+            }
+        }
+
+        // feedback
+        for (int i=0; i<inputBus->getNumberOfChannels(); ++i) {
+            const int outputChannelNum = inputBus->getChannelIndexInProcessBlockBuffer (i);
+            feedbackDelayBuffer (buffer, outputChannelNum, i, mWritePos, mLastFeedbackGain, feedback);
+        }
+        mLastFeedbackGain = feedback;
+
+        mWritePos += buffer.getNumSamples();
+        mWritePos %= mDelayBuffer.getNumSamples();
     }
-    mLastInputGain = gain;
-
-    const int64 readPos = static_cast<int64>((mDelayBuffer.getNumSamples() + mWritePos - (mSampleRate * time / 1000.0))) % mDelayBuffer.getNumSamples();
-
-    AudioChannelSet outputBus = busArrangement.outputBuses.getUnchecked (0).channels;
-    for (int i=0; i<outputBus.size(); ++i) {
-        const int outputChannelNum = busArrangement.getChannelIndexInProcessBlockBuffer (false, 0, i);
-
-        fetchFromDelayBuffer (buffer, i % mDelayBuffer.getNumChannels(), outputChannelNum, readPos);
-    }
-
-    for (int i=0; i<inputBus.size(); ++i) {
-        const int outputChannelNum = busArrangement.getChannelIndexInProcessBlockBuffer (false, 0, i);
-        feedbackDelayBuffer (buffer, outputChannelNum, i, mWritePos, mLastFeedbackGain, feedback);
-    }
-    mLastFeedbackGain = feedback;
-
-    mWritePos += buffer.getNumSamples();
-    mWritePos %= mDelayBuffer.getNumSamples();
 }
 
 void FftapeDelayAudioProcessor::fillDelayBuffer (AudioSampleBuffer& buffer, const int channelIn, const int channelOut,
