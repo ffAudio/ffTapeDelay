@@ -34,6 +34,10 @@ FftapeDelayAudioProcessor::FftapeDelayAudioProcessor() :
     mState->createAndAddParameter(paramTime,     "Time",     TRANS ("Delay time"),    NormalisableRange<float> (0.0, 2000.0, 1.0), 200.0, nullptr, nullptr);
     mState->createAndAddParameter(paramFeedback, "Feedback", TRANS ("Feedback Gain"), NormalisableRange<float> (0.0,    2.0, 0.1), 0.6,   nullptr, nullptr);
 
+    mState->addParameterListener (paramGain, this);
+    mState->addParameterListener (paramTime, this);
+    mState->addParameterListener (paramFeedback, this);
+
     mState->state = ValueTree ("FFTapeDelay");
 }
 
