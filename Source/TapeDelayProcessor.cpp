@@ -111,7 +111,7 @@ void FftapeDelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     const int totalNumInputChannels  = getTotalNumInputChannels();
 
     // sample buffer for 2 seconds + 2 buffers safety
-    mDelayBuffer.setSize (totalNumInputChannels, 2.0 * (samplesPerBlock + sampleRate));
+    mDelayBuffer.setSize (totalNumInputChannels, 2.0 * (samplesPerBlock + sampleRate), false, true);
 
 
 }
