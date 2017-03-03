@@ -153,8 +153,6 @@ bool FftapeDelayAudioProcessor::isBusesLayoutSupported (const BusesLayout& layou
 
 void FftapeDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
-    ScopedLock lock (getCallbackLock());
-    
     if (Bus* inputBus = getBus (true, 0))
     {
         const float gain = mGain.get();
