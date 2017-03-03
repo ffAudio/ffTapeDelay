@@ -8,8 +8,8 @@
   ==============================================================================
 */
 
-#ifndef PLUGINPROCESSOR_H_INCLUDED
-#define PLUGINPROCESSOR_H_INCLUDED
+#ifndef TAPEDELAYPROCESSOR_H_INCLUDED
+#define TAPEDELAYPROCESSOR_H_INCLUDED
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
@@ -90,4 +90,4 @@ private:
 };
 
 
-#endif  // PLUGINPROCESSOR_H_INCLUDED
+#endif  // TAPEDELAYPROCESSOR_H_INCLUDED

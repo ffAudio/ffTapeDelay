@@ -8,8 +8,8 @@
   ==============================================================================
 */
 
-#include "PluginProcessor.h"
-#include "PluginEditor.h"
+#include "TapeDelayProcessor.h"
+#include "TapeDelayEditor.h"
 
 
 String FftapeDelayAudioProcessor::paramGain     ("gain");
