@@ -18,33 +18,21 @@ String FftapeDelayAudioProcessor::paramFeedback ("feedback");
 
 
 //==============================================================================
-FftapeDelayAudioProcessor::FftapeDelayAudioProcessor() :
-    mGain (1.0),
-    mTime (200.0),
-    mFeedback (0.6),
-    mLastInputGain (0.0),
-    mLastFeedbackGain (0.0),
-    mWritePos (0),
-    mSampleRate (0)
+FftapeDelayAudioProcessor::FftapeDelayAudioProcessor()
+: mState (*this, &mUndoManager, "FFTapeDelay",
+          {
+              std::make_unique<AudioParameterFloat>(paramGain,     TRANS ("Input Gain"),    NormalisableRange<float>(0.0,    2.0, 0.1), mGain.get()),
+              std::make_unique<AudioParameterFloat>(paramTime,     TRANS ("Delay TIme"),    NormalisableRange<float>(0.0, 2000.0, 1.0), mTime.get()),
+              std::make_unique<AudioParameterFloat>(paramFeedback, TRANS ("Feedback Gain"), NormalisableRange<float>(0.0,    2.0, 0.1), mFeedback.get())
+          })
 {
-    mUndoManager = new UndoManager();
-    mState       = new AudioProcessorValueTreeState (*this, mUndoManager);
-
-    mState->createAndAddParameter(paramGain,     "Gain",     TRANS ("Input Gain"),    NormalisableRange<float> (0.0,    2.0, 0.1), 1.0,   nullptr, nullptr);
-    mState->createAndAddParameter(paramTime,     "Time",     TRANS ("Delay time"),    NormalisableRange<float> (0.0, 2000.0, 1.0), 200.0, nullptr, nullptr);
-    mState->createAndAddParameter(paramFeedback, "Feedback", TRANS ("Feedback Gain"), NormalisableRange<float> (0.0,    2.0, 0.1), 0.6,   nullptr, nullptr);
-
-    mState->addParameterListener (paramGain, this);
-    mState->addParameterListener (paramTime, this);
-    mState->addParameterListener (paramFeedback, this);
-
-    mState->state = ValueTree ("FFTapeDelay");
+    mState.addParameterListener (paramGain, this);
+    mState.addParameterListener (paramTime, this);
+    mState.addParameterListener (paramFeedback, this);
 }
 
 FftapeDelayAudioProcessor::~FftapeDelayAudioProcessor()
 {
-    mState = nullptr;
-    mUndoManager = nullptr;
 }
 
 //==============================================================================
@@ -229,7 +217,7 @@ void FftapeDelayAudioProcessor::feedbackDelayBuffer (AudioSampleBuffer& buffer, 
 
 AudioProcessorValueTreeState& FftapeDelayAudioProcessor::getValueTreeState()
 {
-    return *mState;
+    return mState;
 }
 
 //==============================================================================
@@ -248,7 +236,7 @@ void FftapeDelayAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
     MemoryOutputStream stream(destData, false);
-    mState->state.writeToStream (stream);
+    mState.state.writeToStream (stream);
 }
 
 void FftapeDelayAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
@@ -257,7 +245,7 @@ void FftapeDelayAudioProcessor::setStateInformation (const void* data, int sizeI
     // whose contents will have been created by the getStateInformation() call.
     ValueTree tree = ValueTree::readFromData (data, sizeInBytes);
     if (tree.isValid()) {
-        mState->state = tree;
+        mState.state = tree;
     }
 }
 

@@ -20,26 +20,19 @@ FftapeDelayAudioProcessorEditor::FftapeDelayAudioProcessorEditor (FftapeDelayAud
     mTimeSlider     = new Slider (Slider::RotaryHorizontalVerticalDrag,  Slider::TextBoxBelow);
     mFeedbackSlider = new Slider (Slider::RotaryHorizontalVerticalDrag,  Slider::TextBoxBelow);
 
-    addAndMakeVisible (mGainSlider);
-    addAndMakeVisible (mTimeSlider);
-    addAndMakeVisible (mFeedbackSlider);
-
     mGainAttachment     = new AudioProcessorValueTreeState::SliderAttachment (p.getValueTreeState(), FftapeDelayAudioProcessor::paramGain, *mGainSlider);
     mTimeAttachment     = new AudioProcessorValueTreeState::SliderAttachment (p.getValueTreeState(), FftapeDelayAudioProcessor::paramTime, *mTimeSlider);
     mFeedbackAttachment = new AudioProcessorValueTreeState::SliderAttachment (p.getValueTreeState(), FftapeDelayAudioProcessor::paramFeedback, *mFeedbackSlider);
+
+    addAndMakeVisible (mGainSlider);
+    addAndMakeVisible (mTimeSlider);
+    addAndMakeVisible (mFeedbackSlider);
 
     setSize (400, 250);
 }
 
 FftapeDelayAudioProcessorEditor::~FftapeDelayAudioProcessorEditor()
 {
-    mFeedbackAttachment = nullptr;
-    mTimeAttachment     = nullptr;
-    mGainAttachment     = nullptr;
-
-    mFeedbackSlider = nullptr;
-    mTimeSlider     = nullptr;
-    mGainSlider     = nullptr;
 }
 
 //==============================================================================
@@ -59,7 +52,7 @@ void FftapeDelayAudioProcessorEditor::paint (Graphics& g)
 
 void FftapeDelayAudioProcessorEditor::resized()
 {
-    Rectangle<int> box (getLocalBounds());
+    auto box = getLocalBounds();
     box.setWidth (getWidth() / 3);
     box.setHeight (getHeight() - 40);
     mGainSlider->setBounds (box);

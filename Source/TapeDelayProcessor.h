@@ -73,20 +73,20 @@ private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FftapeDelayAudioProcessor)
 
-    ScopedPointer<AudioProcessorValueTreeState> mState;
-    ScopedPointer<UndoManager>                  mUndoManager;
+    Atomic<float>   mGain     {   1.0 };
+    Atomic<float>   mTime     { 200.0 };
+    Atomic<float>   mFeedback {   0.6 };
 
-    AudioSampleBuffer                           mDelayBuffer;
+    UndoManager                  mUndoManager;
+    AudioProcessorValueTreeState mState;
 
-    Atomic<float>   mGain;
-    Atomic<float>   mTime;
-    Atomic<float>   mFeedback;
+    AudioSampleBuffer            mDelayBuffer;
 
-    float mLastInputGain;
-    float mLastFeedbackGain;
+    float mLastInputGain    = 0.0f;
+    float mLastFeedbackGain = 0.0f;
 
-    int64 mWritePos;
-    double mSampleRate;
+    int64 mWritePos         = 0;
+    double mSampleRate      = 0;
 };
 
 

@@ -2,16 +2,16 @@
 
 <JUCERPROJECT id="huOgvr" name="FF-TapeDelay" projectType="audioplug" version="1.0.1"
               bundleIdentifier="com.foleysfinest.FFTapeDelay" includeBinaryInAppConfig="1"
-              buildVST="1" buildVST3="1" buildAU="1" buildAUv3="0" buildRTAS="0"
-              buildAAX="1" pluginName="FF-TapeDelay" pluginDesc="FF-TapeDelay"
+              buildVST="0" buildVST3="1" buildAU="1" buildAUv3="0" buildRTAS="0"
+              buildAAX="0" pluginName="FF-TapeDelay" pluginDesc="FF-TapeDelay"
               pluginManufacturer="Foleys-Finest" pluginManufacturerCode="FFAU"
               pluginCode="Tpdl" pluginChannelConfigs="" pluginIsSynth="0" pluginWantsMidiIn="0"
               pluginProducesMidiOut="0" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="FFTapeDelayAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.FFTapeDelay"
-              pluginAAXCategory="AAX_ePlugInCategory_Delay" jucerVersion="4.3.1"
-              companyWebsite="www.foleysfinest.com" companyEmail="developer@foleysfinest.com"
-              companyName="Foleys Finest" pluginVSTCategory="kPlugCategEffect"
-              buildStandalone="0" enableIAA="0">
+              pluginAAXCategory="16" jucerVersion="5.4.1" companyWebsite="www.foleysfinest.com"
+              companyEmail="developer@foleysfinest.com" companyName="Foleys Finest"
+              pluginVSTCategory="kPlugCategEffect" buildStandalone="1" enableIAA="0"
+              pluginFormats="buildAU,buildStandalone,buildVST3">
   <MAINGROUP id="F25xsz" name="FF-TapeDelay">
     <GROUP id="{6B4C2B33-3E03-2019-826E-A12C653A4BA8}" name="Source">
       <FILE id="btuCfD" name="TapeDelayEditor.cpp" compile="1" resource="0"
@@ -25,14 +25,16 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX" vstFolder="" vst3Folder="" aaxFolder="">
+    <XCODE_MAC targetFolder="Builds/MacOSX" vstFolder="">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="FF-TapeDelay"
                        cppLanguageStandard="c++11" cppLibType="libc++" osxCompatibility="10.8 SDK"
-                       xcodeAaxBinaryLocation="/Applications/ProTools_3PDev/Plug-Ins/"/>
+                       xcodeAaxBinaryLocation="/Applications/ProTools_3PDev/Plug-Ins/"
+                       aaxBinaryLocation="/Applications/ProTools_3PDev/Plug-Ins/"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="FF-TapeDelay"
                        osxCompatibility="10.8 SDK" cppLanguageStandard="c++11" cppLibType="libc++"
-                       xcodeAaxBinaryLocation="/Applications/ProTools_3PDev/Plug-Ins/"/>
+                       xcodeAaxBinaryLocation="/Applications/ProTools_3PDev/Plug-Ins/"
+                       aaxBinaryLocation="/Applications/ProTools_3PDev/Plug-Ins/"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../JUCE/modules"/>
@@ -46,21 +48,27 @@
         <MODULEPATH id="juce_audio_formats" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_processors" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_audio_plugin_client" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
   <MODULES>
-    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
-    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
+  <JUCEOPTIONS JUCE_QUICKTIME="disabled" JUCE_VST3_CAN_REPLACE_VST2="0"/>
+  <LIVE_SETTINGS>
+    <OSX/>
+  </LIVE_SETTINGS>
 </JUCERPROJECT>
