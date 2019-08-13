@@ -8,8 +8,7 @@
   ==============================================================================
 */
 
-#ifndef TAPEDELAYPROCESSOR_H_INCLUDED
-#define TAPEDELAYPROCESSOR_H_INCLUDED
+#pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
@@ -17,13 +16,13 @@
 //==============================================================================
 /**
 */
-class FftapeDelayAudioProcessor  :  public AudioProcessor,
+class TapeDelayAudioProcessor  :  public AudioProcessor,
                                     public AudioProcessorValueTreeState::Listener
 {
 public:
     //==============================================================================
-    FftapeDelayAudioProcessor();
-    ~FftapeDelayAudioProcessor();
+    TapeDelayAudioProcessor();
+    ~TapeDelayAudioProcessor();
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -71,7 +70,7 @@ public:
 
 private:
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FftapeDelayAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TapeDelayAudioProcessor)
 
     Atomic<float>   mGain     {   1.0 };
     Atomic<float>   mTime     { 200.0 };
@@ -88,6 +87,3 @@ private:
     int64 mWritePos         = 0;
     double mSampleRate      = 0;
 };
-
-
-#endif  // TAPEDELAYPROCESSOR_H_INCLUDED

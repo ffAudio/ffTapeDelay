@@ -13,17 +13,9 @@
 
 
 //==============================================================================
-FftapeDelayAudioProcessorEditor::FftapeDelayAudioProcessorEditor (FftapeDelayAudioProcessor& p)
+TapeDelayAudioProcessorEditor::TapeDelayAudioProcessorEditor (TapeDelayAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
 {
-    mGainSlider     = new Slider (Slider::RotaryHorizontalVerticalDrag,  Slider::TextBoxBelow);
-    mTimeSlider     = new Slider (Slider::RotaryHorizontalVerticalDrag,  Slider::TextBoxBelow);
-    mFeedbackSlider = new Slider (Slider::RotaryHorizontalVerticalDrag,  Slider::TextBoxBelow);
-
-    mGainAttachment     = new AudioProcessorValueTreeState::SliderAttachment (p.getValueTreeState(), FftapeDelayAudioProcessor::paramGain, *mGainSlider);
-    mTimeAttachment     = new AudioProcessorValueTreeState::SliderAttachment (p.getValueTreeState(), FftapeDelayAudioProcessor::paramTime, *mTimeSlider);
-    mFeedbackAttachment = new AudioProcessorValueTreeState::SliderAttachment (p.getValueTreeState(), FftapeDelayAudioProcessor::paramFeedback, *mFeedbackSlider);
-
     addAndMakeVisible (mGainSlider);
     addAndMakeVisible (mTimeSlider);
     addAndMakeVisible (mFeedbackSlider);
@@ -31,33 +23,34 @@ FftapeDelayAudioProcessorEditor::FftapeDelayAudioProcessorEditor (FftapeDelayAud
     setSize (400, 250);
 }
 
-FftapeDelayAudioProcessorEditor::~FftapeDelayAudioProcessorEditor()
+TapeDelayAudioProcessorEditor::~TapeDelayAudioProcessorEditor()
 {
 }
 
 //==============================================================================
-void FftapeDelayAudioProcessorEditor::paint (Graphics& g)
+void TapeDelayAudioProcessorEditor::paint (Graphics& g)
 {
     g.fillAll (Colours::darkgoldenrod);
 
     g.setColour (Colours::silver);
     g.setFont   (24.0f);
-    Rectangle<int> box (getX(), getBottom() - 40, getWidth() / 3, 40);
-    g.drawFittedText (TRANS ("Gain"), box, Justification::centred, 1);
-    box.setX (box.getRight());
-    g.drawFittedText (TRANS ("Time"), box, Justification::centred, 1);
-    box.setX (box.getRight());
-    g.drawFittedText (TRANS ("Feedback"), box, Justification::centred, 1);
+
+    auto box = getLocalBounds().reduced (20);
+    box = box.withTop (box.getBottom() - 40);
+
+    const auto width = box.getWidth() / 3;
+    g.drawFittedText (TRANS ("Gain"), box.removeFromLeft (width), Justification::centred, 1);
+    g.drawFittedText (TRANS ("Time"), box.removeFromLeft (width), Justification::centred, 1);
+    g.drawFittedText (TRANS ("Feedback"), box.removeFromLeft (width), Justification::centred, 1);
 }
 
-void FftapeDelayAudioProcessorEditor::resized()
+void TapeDelayAudioProcessorEditor::resized()
 {
-    auto box = getLocalBounds();
-    box.setWidth (getWidth() / 3);
-    box.setHeight (getHeight() - 40);
-    mGainSlider->setBounds (box);
-    box.setX (box.getRight());
-    mTimeSlider->setBounds (box);
-    box.setX (box.getRight());
-    mFeedbackSlider->setBounds (box);
+    auto box = getLocalBounds().reduced (20);
+    box.removeFromBottom (40);
+
+    const auto width = box.getWidth() / 3;
+    mGainSlider.setBounds (box.removeFromLeft (width).reduced (10));
+    mTimeSlider.setBounds (box.removeFromLeft (width).reduced (10));
+    mFeedbackSlider.setBounds (box.removeFromLeft (width).reduced (10));
 }

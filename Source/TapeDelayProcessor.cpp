@@ -12,14 +12,14 @@
 #include "TapeDelayEditor.h"
 
 
-String FftapeDelayAudioProcessor::paramGain     ("gain");
-String FftapeDelayAudioProcessor::paramTime     ("time");
-String FftapeDelayAudioProcessor::paramFeedback ("feedback");
+String TapeDelayAudioProcessor::paramGain     ("gain");
+String TapeDelayAudioProcessor::paramTime     ("time");
+String TapeDelayAudioProcessor::paramFeedback ("feedback");
 
 
 //==============================================================================
-FftapeDelayAudioProcessor::FftapeDelayAudioProcessor()
-: mState (*this, &mUndoManager, "FFTapeDelay",
+TapeDelayAudioProcessor::TapeDelayAudioProcessor()
+  : mState (*this, &mUndoManager, "FFTapeDelay",
           {
               std::make_unique<AudioParameterFloat>(paramGain,     TRANS ("Input Gain"),    NormalisableRange<float>(0.0,    2.0, 0.1), mGain.get()),
               std::make_unique<AudioParameterFloat>(paramTime,     TRANS ("Delay TIme"),    NormalisableRange<float>(0.0, 2000.0, 1.0), mTime.get()),
@@ -31,65 +31,12 @@ FftapeDelayAudioProcessor::FftapeDelayAudioProcessor()
     mState.addParameterListener (paramFeedback, this);
 }
 
-FftapeDelayAudioProcessor::~FftapeDelayAudioProcessor()
+TapeDelayAudioProcessor::~TapeDelayAudioProcessor()
 {
 }
 
 //==============================================================================
-const String FftapeDelayAudioProcessor::getName() const
-{
-    return JucePlugin_Name;
-}
-
-bool FftapeDelayAudioProcessor::acceptsMidi() const
-{
-   #if JucePlugin_WantsMidiInput
-    return true;
-   #else
-    return false;
-   #endif
-}
-
-bool FftapeDelayAudioProcessor::producesMidi() const
-{
-   #if JucePlugin_ProducesMidiOutput
-    return true;
-   #else
-    return false;
-   #endif
-}
-
-double FftapeDelayAudioProcessor::getTailLengthSeconds() const
-{
-    return 2.0;
-}
-
-int FftapeDelayAudioProcessor::getNumPrograms()
-{
-    return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
-                // so this should be at least 1, even if you're not really implementing programs.
-}
-
-int FftapeDelayAudioProcessor::getCurrentProgram()
-{
-    return 0;
-}
-
-void FftapeDelayAudioProcessor::setCurrentProgram (int index)
-{
-}
-
-const String FftapeDelayAudioProcessor::getProgramName (int index)
-{
-    return String();
-}
-
-void FftapeDelayAudioProcessor::changeProgramName (int index, const String& newName)
-{
-}
-
-//==============================================================================
-void FftapeDelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void TapeDelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
@@ -104,13 +51,13 @@ void FftapeDelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
 
 }
 
-void FftapeDelayAudioProcessor::releaseResources()
+void TapeDelayAudioProcessor::releaseResources()
 {
     // When playback stops, you can use this as an opportunity to free up any
     // spare memory, etc.
 }
 
-void FftapeDelayAudioProcessor::parameterChanged (const String &parameterID, float newValue)
+void TapeDelayAudioProcessor::parameterChanged (const String &parameterID, float newValue)
 {
     if (parameterID == paramGain) {
         mGain = newValue;
@@ -123,7 +70,7 @@ void FftapeDelayAudioProcessor::parameterChanged (const String &parameterID, flo
     }
 }
 
-bool FftapeDelayAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool TapeDelayAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
     // we only support stereo and mono
     if (layouts.getMainInputChannels() == 0 || layouts.getMainInputChannels() > 2)
@@ -139,7 +86,7 @@ bool FftapeDelayAudioProcessor::isBusesLayoutSupported (const BusesLayout& layou
     return true;
 }
 
-void FftapeDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
+void TapeDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
     if (Bus* inputBus = getBus (true, 0))
     {
@@ -175,8 +122,8 @@ void FftapeDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuf
     }
 }
 
-void FftapeDelayAudioProcessor::fillDelayBuffer (AudioSampleBuffer& buffer, const int channelIn, const int channelOut,
-                                                 const int64 writePos, float startGain, float endGain)
+void TapeDelayAudioProcessor::fillDelayBuffer (AudioSampleBuffer& buffer, const int channelIn, const int channelOut,
+                                               const int64 writePos, float startGain, float endGain)
 {
     if (mDelayBuffer.getNumSamples() > writePos + buffer.getNumSamples()) {
         mDelayBuffer.copyFromWithRamp (channelOut, writePos, buffer.getReadPointer (channelIn), buffer.getNumSamples(), startGain, endGain);
@@ -189,7 +136,7 @@ void FftapeDelayAudioProcessor::fillDelayBuffer (AudioSampleBuffer& buffer, cons
     }
 }
 
-void FftapeDelayAudioProcessor::fetchFromDelayBuffer (AudioSampleBuffer& buffer, const int channelIn, const int channelOut, const int64 readPos)
+void TapeDelayAudioProcessor::fetchFromDelayBuffer (AudioSampleBuffer& buffer, const int channelIn, const int channelOut, const int64 readPos)
 {
     if (mDelayBuffer.getNumSamples() > readPos + buffer.getNumSamples()) {
         buffer.copyFrom (channelOut, 0, mDelayBuffer.getReadPointer (channelIn) + readPos, buffer.getNumSamples());
@@ -201,8 +148,8 @@ void FftapeDelayAudioProcessor::fetchFromDelayBuffer (AudioSampleBuffer& buffer,
     }
 }
 
-void FftapeDelayAudioProcessor::feedbackDelayBuffer (AudioSampleBuffer& buffer, const int channelIn, const int channelOut,
-                                                     const int64 writePos, float startGain, float endGain)
+void TapeDelayAudioProcessor::feedbackDelayBuffer (AudioSampleBuffer& buffer, const int channelIn, const int channelOut,
+                                                   const int64 writePos, float startGain, float endGain)
 {
     if (mDelayBuffer.getNumSamples() > writePos + buffer.getNumSamples()) {
         mDelayBuffer.addFromWithRamp (channelOut, writePos, buffer.getWritePointer (channelIn), buffer.getNumSamples(), startGain, endGain);
@@ -215,31 +162,31 @@ void FftapeDelayAudioProcessor::feedbackDelayBuffer (AudioSampleBuffer& buffer, 
     }
 }
 
-AudioProcessorValueTreeState& FftapeDelayAudioProcessor::getValueTreeState()
+AudioProcessorValueTreeState& TapeDelayAudioProcessor::getValueTreeState()
 {
     return mState;
 }
 
 //==============================================================================
-bool FftapeDelayAudioProcessor::hasEditor() const
+bool TapeDelayAudioProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-AudioProcessorEditor* FftapeDelayAudioProcessor::createEditor()
+AudioProcessorEditor* TapeDelayAudioProcessor::createEditor()
 {
-    return new FftapeDelayAudioProcessorEditor (*this);
+    return new TapeDelayAudioProcessorEditor (*this);
 }
 
 //==============================================================================
-void FftapeDelayAudioProcessor::getStateInformation (MemoryBlock& destData)
+void TapeDelayAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
     MemoryOutputStream stream(destData, false);
     mState.state.writeToStream (stream);
 }
 
-void FftapeDelayAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void TapeDelayAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
@@ -250,8 +197,61 @@ void FftapeDelayAudioProcessor::setStateInformation (const void* data, int sizeI
 }
 
 //==============================================================================
+const String TapeDelayAudioProcessor::getName() const
+{
+    return JucePlugin_Name;
+}
+
+bool TapeDelayAudioProcessor::acceptsMidi() const
+{
+#if JucePlugin_WantsMidiInput
+    return true;
+#else
+    return false;
+#endif
+}
+
+bool TapeDelayAudioProcessor::producesMidi() const
+{
+#if JucePlugin_ProducesMidiOutput
+    return true;
+#else
+    return false;
+#endif
+}
+
+double TapeDelayAudioProcessor::getTailLengthSeconds() const
+{
+    return 2.0;
+}
+
+int TapeDelayAudioProcessor::getNumPrograms()
+{
+    return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
+    // so this should be at least 1, even if you're not really implementing programs.
+}
+
+int TapeDelayAudioProcessor::getCurrentProgram()
+{
+    return 0;
+}
+
+void TapeDelayAudioProcessor::setCurrentProgram (int index)
+{
+}
+
+const String TapeDelayAudioProcessor::getProgramName (int index)
+{
+    return String();
+}
+
+void TapeDelayAudioProcessor::changeProgramName (int index, const String& newName)
+{
+}
+
+//==============================================================================
 // This creates new instances of the plugin..
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new FftapeDelayAudioProcessor();
+    return new TapeDelayAudioProcessor();
 }

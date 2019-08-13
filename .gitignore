@@ -1,0 +1,4 @@
+**/.DS_*
+**/Builds
+**/JuceLibraryCode
+!**/JuceLibraryCode/AppConfig.h

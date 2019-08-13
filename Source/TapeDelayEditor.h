@@ -8,8 +8,7 @@
   ==============================================================================
 */
 
-#ifndef TAPEDELAYEDITOR_H_INCLUDED
-#define TAPEDELAYEDITOR_H_INCLUDED
+#pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "TapeDelayProcessor.h"
@@ -18,11 +17,11 @@
 //==============================================================================
 /**
 */
-class FftapeDelayAudioProcessorEditor  : public AudioProcessorEditor
+class TapeDelayAudioProcessorEditor  : public AudioProcessorEditor
 {
 public:
-    FftapeDelayAudioProcessorEditor (FftapeDelayAudioProcessor&);
-    ~FftapeDelayAudioProcessorEditor();
+    TapeDelayAudioProcessorEditor (TapeDelayAudioProcessor&);
+    ~TapeDelayAudioProcessorEditor();
 
     //==============================================================================
     void paint (Graphics&) override;
@@ -31,18 +30,15 @@ public:
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-    FftapeDelayAudioProcessor& processor;
+    TapeDelayAudioProcessor& processor;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FftapeDelayAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TapeDelayAudioProcessorEditor)
 
-    ScopedPointer<Slider> mGainSlider;
-    ScopedPointer<Slider> mTimeSlider;
-    ScopedPointer<Slider> mFeedbackSlider;
+    Slider mGainSlider      { Slider::RotaryHorizontalVerticalDrag,  Slider::TextBoxBelow };
+    Slider mTimeSlider      { Slider::RotaryHorizontalVerticalDrag,  Slider::TextBoxBelow };
+    Slider mFeedbackSlider  { Slider::RotaryHorizontalVerticalDrag,  Slider::TextBoxBelow };
 
-    ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> mGainAttachment;
-    ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> mTimeAttachment;
-    ScopedPointer<AudioProcessorValueTreeState::SliderAttachment> mFeedbackAttachment;
+    AudioProcessorValueTreeState::SliderAttachment mGainAttachment      { processor.getValueTreeState(), TapeDelayAudioProcessor::paramGain,     mGainSlider };
+    AudioProcessorValueTreeState::SliderAttachment mTimeAttachment      { processor.getValueTreeState(), TapeDelayAudioProcessor::paramTime,     mTimeSlider };
+    AudioProcessorValueTreeState::SliderAttachment mFeedbackAttachment  { processor.getValueTreeState(), TapeDelayAudioProcessor::paramFeedback, mFeedbackSlider };
 };
-
-
-#endif  // TAPEDELAYEDITOR_H_INCLUDED
