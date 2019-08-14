@@ -39,7 +39,7 @@ void TapeDelayAudioProcessorEditor::paint (Graphics& g)
     box = box.withTop (box.getBottom() - 40);
 
     const auto width = box.getWidth() / 3;
-    g.drawFittedText (TRANS ("Gain"), box.removeFromLeft (width), Justification::centred, 1);
+    g.drawFittedText (TRANS ("Dry Gain"), box.removeFromLeft (width), Justification::centred, 1);
     g.drawFittedText (TRANS ("Time"), box.removeFromLeft (width), Justification::centred, 1);
     g.drawFittedText (TRANS ("Feedback"), box.removeFromLeft (width), Justification::centred, 1);
 }

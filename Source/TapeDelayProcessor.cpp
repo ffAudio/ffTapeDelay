@@ -21,9 +21,24 @@ String TapeDelayAudioProcessor::paramFeedback ("feedback");
 TapeDelayAudioProcessor::TapeDelayAudioProcessor()
   : mState (*this, &mUndoManager, "FFTapeDelay",
           {
-              std::make_unique<AudioParameterFloat>(paramGain,     TRANS ("Input Gain"),    NormalisableRange<float>(0.0,    2.0, 0.1), mGain.get()),
-              std::make_unique<AudioParameterFloat>(paramTime,     TRANS ("Delay TIme"),    NormalisableRange<float>(0.0, 2000.0, 1.0), mTime.get()),
-              std::make_unique<AudioParameterFloat>(paramFeedback, TRANS ("Feedback Gain"), NormalisableRange<float>(0.0,    2.0, 0.1), mFeedback.get())
+              std::make_unique<AudioParameterFloat>(paramGain,
+                                                    TRANS ("Input Gain"),
+                                                    NormalisableRange<float>(-100.0f, 6.0f, 0.1f, std::log (0.5f) / std::log (100.0f / 106.0f)),
+                                                    mGain.get(), "dB",
+                                                    AudioProcessorParameter::genericParameter,
+                                                    [](float v, int) { return String (v, 1) + " dB"; },
+                                                    [](const String& t) { return t.dropLastCharacters (3).getFloatValue(); }),
+              std::make_unique<AudioParameterFloat>(paramTime,
+                                                    TRANS ("Delay TIme"),    NormalisableRange<float>(0.0, 2000.0, 1.0),
+                                                    mTime.get(), "ms",
+                                                    AudioProcessorParameter::genericParameter,
+                                                    [](float v, int) { return String (roundToInt (v)) + " ms"; },
+                                                    [](const String& t) { return t.dropLastCharacters (3).getFloatValue(); }),
+              std::make_unique<AudioParameterFloat>(paramFeedback,
+                                                    TRANS ("Feedback Gain"), NormalisableRange<float>(-100.0f, 6.0f, 0.1f, std::log (0.5f) / std::log (100.0f / 106.0f)),
+                                                    mFeedback.get(), "dB", AudioProcessorParameter::genericParameter,
+                                                    [](float v, int) { return String (v, 1) + " dB"; },
+                                                    [](const String& t) { return t.dropLastCharacters (3).getFloatValue(); })
           })
 {
     mState.addParameterListener (paramGain, this);
@@ -43,10 +58,9 @@ void TapeDelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
 
     mSampleRate = sampleRate;
 
-    const int totalNumInputChannels  = getTotalNumInputChannels();
-
     // sample buffer for 2 seconds + 2 buffers safety
-    mDelayBuffer.setSize (totalNumInputChannels, 2.0 * (samplesPerBlock + sampleRate), false, true);
+    mDelayBuffer.setSize (getTotalNumOutputChannels(), 2.0 * (samplesPerBlock + sampleRate), false, false);
+    mDelayBuffer.clear();
 
     mExpectedReadPos = -1;
 }
@@ -90,14 +104,14 @@ void TapeDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffe
 {
     if (Bus* inputBus = getBus (true, 0))
     {
-        const float gain = mGain.get();
+        const float gain = Decibels::decibelsToGain (mGain.get());
         const float time = mTime.get();
-        const float feedback = mFeedback.get();
+        const float feedback = Decibels::decibelsToGain (mFeedback.get());
 
         // write original to delay
-        for (int i=0; i < inputBus->getNumberOfChannels(); ++i)
+        for (int i=0; i < mDelayBuffer.getNumChannels(); ++i)
         {
-            const int inputChannelNum = inputBus->getChannelIndexInProcessBlockBuffer (i);
+            const int inputChannelNum = inputBus->getChannelIndexInProcessBlockBuffer (std::min (i, inputBus->getNumberOfChannels()));
             writeToDelayBuffer (buffer, inputChannelNum, i, mWritePos, 1.0f, 1.0f, true);
         }
 
@@ -106,7 +120,7 @@ void TapeDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffe
         mLastInputGain = gain;
 
         // read delayed signal
-        auto readPos = static_cast<int>(mWritePos - (mSampleRate * time / 1000.0));
+        auto readPos = roundToInt (mWritePos - (mSampleRate * time / 1000.0));
         if (readPos < 0)
             readPos += mDelayBuffer.getNumSamples();
 
@@ -120,7 +134,7 @@ void TapeDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffe
                 for (int i=0; i<outputBus->getNumberOfChannels(); ++i)
                 {
                     const int outputChannelNum = outputBus->getChannelIndexInProcessBlockBuffer (i);
-                    readFromDelayBuffer (buffer, i % mDelayBuffer.getNumChannels(), outputChannelNum, mExpectedReadPos, 1.0, endGain, false);
+                    readFromDelayBuffer (buffer, i, outputChannelNum, mExpectedReadPos, 1.0, endGain, false);
                 }
             }
 
@@ -130,7 +144,7 @@ void TapeDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffe
                 for (int i=0; i<outputBus->getNumberOfChannels(); ++i)
                 {
                     const int outputChannelNum = outputBus->getChannelIndexInProcessBlockBuffer (i);
-                    readFromDelayBuffer (buffer, i % mDelayBuffer.getNumChannels(), outputChannelNum, readPos, 0.0, 1.0, false);
+                    readFromDelayBuffer (buffer, i, outputChannelNum, readPos, 0.0, 1.0, false);
                 }
             }
         }

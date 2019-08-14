@@ -78,9 +78,9 @@ private:
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TapeDelayAudioProcessor)
 
-    Atomic<float>   mGain     {   1.0 };
-    Atomic<float>   mTime     { 200.0 };
-    Atomic<float>   mFeedback {   0.6 };
+    Atomic<float>   mGain     {   0.0f };
+    Atomic<float>   mTime     { 200.0f };
+    Atomic<float>   mFeedback {  -6.0f };
 
     UndoManager                  mUndoManager;
     AudioProcessorValueTreeState mState;
