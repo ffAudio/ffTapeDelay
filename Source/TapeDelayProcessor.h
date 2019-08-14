@@ -34,11 +34,17 @@ public:
 
     void processBlock (AudioSampleBuffer&, MidiBuffer&) override;
 
-    void fillDelayBuffer (AudioSampleBuffer& buffer, const int channelIn, const int channelOut, const int64 writePos, float startGain, float endGain);
+    void writeToDelayBuffer (AudioSampleBuffer& buffer,
+                             const int channelIn, const int channelOut,
+                             const int writePos,
+                             float startGain, float endGain,
+                             bool replacing);
 
-    void fetchFromDelayBuffer (AudioSampleBuffer& buffer, const int channelIn, const int channelOut, const int64 readPos);
-
-    void feedbackDelayBuffer (AudioSampleBuffer& buffer, const int channelIn, const int channelOut, const int64 writePos, float startGain, float endGain);
+    void readFromDelayBuffer (AudioSampleBuffer& buffer,
+                              const int channelIn, const int channelOut,
+                              const int readPos,
+                              float startGain, float endGain,
+                              bool replacing);
 
     //==============================================================================
     AudioProcessorEditor* createEditor() override;
@@ -84,6 +90,7 @@ private:
     float mLastInputGain    = 0.0f;
     float mLastFeedbackGain = 0.0f;
 
-    int64 mWritePos         = 0;
+    int    mWritePos        = 0;
+    int    mExpectedReadPos = -1;
     double mSampleRate      = 0;
 };
