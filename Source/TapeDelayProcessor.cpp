@@ -185,7 +185,7 @@ void TapeDelayAudioProcessor::writeToDelayBuffer (AudioSampleBuffer& buffer,
         const auto midGain = jmap (float (midPos) / buffer.getNumSamples(), startGain, endGain);
         if (replacing)
         {
-            mDelayBuffer.copyFromWithRamp (channelOut, writePos, buffer.getReadPointer (channelIn),         midPos, mLastInputGain, midGain);
+            mDelayBuffer.copyFromWithRamp (channelOut, writePos, buffer.getReadPointer (channelIn),         midPos, startGain, midGain);
             mDelayBuffer.copyFromWithRamp (channelOut, 0,        buffer.getReadPointer (channelIn, midPos), buffer.getNumSamples() - midPos, midGain, endGain);
         }
         else
